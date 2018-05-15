@@ -1,75 +1,88 @@
 function doGet(e) {
   
-  
-  /*
-  **
-  ** Developer mode has a different script ID and URL than the normal one
-  ** 
-  ** Published script 
-  **
-  */
-  _developerMode_ = true;
-  
-  /* what to do
-  **
-  ** Can be one of these: 'insert', 'update', 'read', 'delete'
-  **
-  */
-  var op = e.parameter.action;
-  var url = "https://docs.google.com/spreadsheets/d/";
-  var propLiveDataSpreadsheetID = PropertiesService.getScriptProperties().getProperty("propLiveDataSpreadsheetID");
-  
-  url += propLiveDataSpreadsheetID;
-  url += "/edit?";
-
-  var ss=SpreadsheetApp.openByUrl(url);
-  var sheet = ss.getSheetByName("Sheet2");
-
-  if (op) {
+  try {
+    /*
+    **
+    ** Developer mode has a different script ID and URL than the normal one
+    ** 
+    ** Published script 
+    **
+    */
+    var _developerMode_ = true;
     
-    if(op == "insert") {
-      return insert_value(e,sheet);
-    }
+    /* what to do
+    **
+    ** The action can be one of these: 'insert', 'update', 'read', 'delete'
+    ** test action is strictly for testing purposes
+    **
+    */
+    var op = e.parameter.action;
+    var url = "https://docs.google.com/spreadsheets/d/";
+    var propLiveDataSpreadsheetID = PropertiesService.getScriptProperties().getProperty("propLiveDataSpreadsheetID");
     
-    if(op == "read") {
-      return read_value(e,ss);
-    }
+    url += propLiveDataSpreadsheetID;
+    url += "/edit?";
     
-    if(op == "update") {
-      return update_value(e,sheet);
-    }
+    var ss=SpreadsheetApp.openByUrl(url);
+    var sheet = ss.getSheetByName("Sheet2");
     
-    if(op == "delete") {
-      return delete_value(e,sheet);
-    }
-    
-    if (op == 'test') {
-      return test(sheet);
-    }
-  } else {
-    
-    // There is no op, so render the entire HTML page
-    
-    var template = HtmlService.createTemplateFromFile("App");
-    
-    var propScriptID = "";
-    
-    if (_developerMode_) {
-      /*
-      In develope mode there is a different URL and script ID
-      */
-      propScriptID = PropertiesService.getScriptProperties().getProperty("propDevScriptID");
-      template.scriptUrl = "https://script.google.com/macros/s/" + propScriptID + "/dev";
+    if (op) {
+      
+      if(op == "insert") {
+        Logger.log("Insert");
+        return insert_value(e,sheet);
+      }
+      
+      if(op == "read") {
+        Logger.log("Read");
+        return read_value(e,ss);
+      }
+      
+      if(op == "update") {
+        Logger.log("Update");
+        return update_value(e,sheet);
+      }
+      
+      if(op == "delete") {
+        Logger.log("Delete");
+        return delete_value(e,sheet);
+      }
+      
+      if (op == 'test') {
+        Logger.log("Test");
+        return test(sheet);
+      }
+      
     } else {
-      /*
-      In normale mode there is a different URL and script ID
-      */
-      propScriptID = PropertiesService.getScriptProperties().getProperty("propLiveScriptID");
-      template.scriptUrl = "https://script.google.com/macros/s/" + propScriptID + "/exec";
+      
+      // There is no op/action, so render the entire HTML page
+      
+      onError2("This file", 0, "There is no op/action, so render the entire HTML page");
+      
+      var template = HtmlService.createTemplateFromFile("App");
+      
+      var propScriptID = "";
+      
+      if (_developerMode_) {
+        /*
+        In develope mode there is a different URL and script ID
+        */
+        propScriptID = PropertiesService.getScriptProperties().getProperty("propDevScriptID");
+        template.scriptUrl = "https://script.google.com/macros/s/" + propScriptID + "/dev";
+      } else {
+        /*
+        In normale mode there is a different URL and script ID
+        */
+        propScriptID = PropertiesService.getScriptProperties().getProperty("propLiveScriptID");
+        template.scriptUrl = "https://script.google.com/macros/s/" + propScriptID + "/exec";
+      }
+      template.developerMode = _developerMode_;
+      
+      var html = template.evaluate();
+      return html;
     }
-    
-    var html = template.evaluate();
-    return html;
+  } catch(e) {
+    onError(e);
   }
 }
 
@@ -86,10 +99,7 @@ function test(sheet)
   result = JSON.stringify({
     "result": result
   });  
-  
-  // <base target="_top">
-    
-  //return ContentService.createTextOutput(result).setMimeType(ContentService.MimeType.JSON);
+
   return ContentService.createTextOutput(result).setMimeType(ContentService.MimeType.TEXT);
 }
 
@@ -124,7 +134,43 @@ function insert_value(request,sheet){
   }
   
   
-
+function readValues()
+{
+  Logger.log("readValues");
+  
+  var output  = ContentService.createTextOutput();
+  
+  try {
+  
+    var url = "https://docs.google.com/spreadsheets/d/";
+    var propLiveDataSpreadsheetID = PropertiesService.getScriptProperties().getProperty("propLiveDataSpreadsheetID");
+    
+    url += propLiveDataSpreadsheetID;
+    url += "/edit?";
+    
+    var ss=SpreadsheetApp.openByUrl(url);
+    
+    var data    = {};
+    var sheet="sheet2";
+    
+    data.records = readData_(ss, sheet);
+    
+    output.setContent(JSON.stringify(data));
+    output.setMimeType(ContentService.MimeType.JSON);
+    
+    Logger.log("readValues complete");
+    Logger.log(data);
+  
+   } catch(e) {
+    output.setContent("ERROR");
+    
+    output.setMimeType(ContentService.MimeType.TEXT);
+    
+    onError(e);
+  }
+  
+  return data;
+}
 
 
 function read_value(request,ss){
@@ -132,7 +178,6 @@ function read_value(request,ss){
  
   var output  = ContentService.createTextOutput(),
       data    = {};
-  //Note : here sheet is sheet name , don't get confuse with other operation 
       var sheet="sheet2";
 
   data.records = readData_(ss, sheet);
