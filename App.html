@@ -115,8 +115,6 @@ function ctrlq(e) {
 function fill_result_table(json) {
 // Set the variables from the results array
 
-alert(json);
-
 		// CREATE DYNAMIC TABLE.
 		var table = document.createElement("table");
 
@@ -126,8 +124,8 @@ alert(json);
 		var cell1 = row.insertCell(0);
 		var cell2 = row.insertCell(1);
 
-		cell1.innerHTML = "<b>IDx</b>";
-		cell2.innerHTML = "<b>NameX</b>";
+		cell1.innerHTML = "<b>ID</b>";
+		cell2.innerHTML = "<b>Name</b>";
 
 		// ADD JSON DATA TO THE TABLE AS ROWS.
 		for (var i = 0; i < json.records.length; i++) {
@@ -152,8 +150,6 @@ function onFailure(error) {
 document.getElementById("loader").style.visibility = "hidden";
 $("#re").css("visibility", "visible");
 alert(error.message);
-//var div = document.getElementById('output');
-//div.innerHTML = "ERROR: " + error.message;
 }
 
 function read_value() {
@@ -161,18 +157,20 @@ function read_value() {
 	$("#re").css("visibility", "hidden");
 
 	document.getElementById("loader").style.visibility = "visible";
-	//var url = script_url + "?action=read";
+	var url = script_url + "?action=read";
 
-	//$.getJSON(url, function (json) {
-    //  fill_result_table(json);
-	//});
+	$.getJSON(url, function (json) {
+      fill_result_table(json);
+	});
     
-    google.script.run
-      .withSuccessHandler(function(json) {
-        fill_result_table(json);
-      })
-      .withFailureHandler(onFailure)
-      .readValues();
+    
+    //google.script.run
+    //  .withSuccessHandler(function(json) {
+    //    fill_result_table(json);
+    //  })
+    //  .withFailureHandler(onFailure)
+    //  .readValues();
+      
 }
         
     </script>

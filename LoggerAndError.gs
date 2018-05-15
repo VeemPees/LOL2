@@ -16,3 +16,9 @@ function onError2(fileName, lineNumber, message)
   cell.offset(lastRow, 1).setValue(fileName);
   cell.offset(lastRow, 2).setValue(lineNumber);
 }
+
+function _log(str)
+{
+  onError2("", "", str);
+}
+

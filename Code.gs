@@ -10,6 +10,12 @@ function doGet(e) {
     */
     var _developerMode_ = true;
     
+    if (_developerMode_) {
+      _log("Developer mode");
+    } else {
+      _log("Normal mode");
+    }
+    
     /* what to do
     **
     ** The action can be one of these: 'insert', 'update', 'read', 'delete'
@@ -17,39 +23,32 @@ function doGet(e) {
     **
     */
     var op = e.parameter.action;
-    var url = "https://docs.google.com/spreadsheets/d/";
-    var propLiveDataSpreadsheetID = PropertiesService.getScriptProperties().getProperty("propLiveDataSpreadsheetID");
     
-    url += propLiveDataSpreadsheetID;
-    url += "/edit?";
-    
-    var ss=SpreadsheetApp.openByUrl(url);
-    var sheet = ss.getSheetByName("Sheet2");
+    _log("In doGet");
     
     if (op) {
       
+      _log("Operation is " + op);
+      
+      var sheet = getSheet("Sheet2");
+      
       if(op == "insert") {
-        Logger.log("Insert");
         return insert_value(e,sheet);
       }
       
       if(op == "read") {
-        Logger.log("Read");
-        return read_value(e,ss);
+        return readValuesRaw(e);
       }
       
       if(op == "update") {
-        Logger.log("Update");
         return update_value(e,sheet);
       }
       
       if(op == "delete") {
-        Logger.log("Delete");
         return delete_value(e,sheet);
       }
       
       if (op == 'test') {
-        Logger.log("Test");
         return test(sheet);
       }
       
@@ -57,7 +56,7 @@ function doGet(e) {
       
       // There is no op/action, so render the entire HTML page
       
-      onError2("This file", 0, "There is no op/action, so render the entire HTML page");
+      _log("There is no op/action, so render the entire HTML page");
       
       var template = HtmlService.createTemplateFromFile("App");
       
@@ -136,61 +135,45 @@ function insert_value(request,sheet){
   
 function readValues()
 {
-  Logger.log("readValues");
-  
-  var output  = ContentService.createTextOutput();
+  _log("readValues");
   
   try {
   
-    var url = "https://docs.google.com/spreadsheets/d/";
-    var propLiveDataSpreadsheetID = PropertiesService.getScriptProperties().getProperty("propLiveDataSpreadsheetID");
+    var ss = openSpreadsheet();
     
-    url += propLiveDataSpreadsheetID;
-    url += "/edit?";
-    
-    var ss=SpreadsheetApp.openByUrl(url);
-    
-    var data    = {};
-    var sheet="sheet2";
+    var data = {};
+    var sheet = "sheet2";
     
     data.records = readData_(ss, sheet);
     
-    output.setContent(JSON.stringify(data));
-    output.setMimeType(ContentService.MimeType.JSON);
-    
-    Logger.log("readValues complete");
-    Logger.log(data);
-  
    } catch(e) {
-    output.setContent("ERROR");
-    
-    output.setMimeType(ContentService.MimeType.TEXT);
-    
-    onError(e);
+     data = e.message;
+     onError(e);
   }
   
   return data;
 }
 
 
-function read_value(request,ss){
-  
+function readValuesRaw(request)
+{
  
+  _log("readValuesRaw");
   var output  = ContentService.createTextOutput(),
       data    = {};
       var sheet="sheet2";
 
-  data.records = readData_(ss, sheet);
+  data = readValues();
   
   var callback = request.parameters.callback;
   
   if (callback === undefined) {
     output.setContent(JSON.stringify(data));
+    output.setMimeType(ContentService.MimeType.JSON);
   } else {
     output.setContent(callback + "(" + JSON.stringify(data) + ")");
+    output.setMimeType(ContentService.MimeType.JAVASCRIPT);
   }
-  output.setMimeType(ContentService.MimeType.JAVASCRIPT);
-  
   return output;
 }
 
