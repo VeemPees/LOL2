@@ -44,6 +44,7 @@ function buildDataSet()
   dataSet.Items = buildData("Items");
   dataSet.Qtt = buildData("Qtt");
   dataSet.Mes = buildData("Mes");
+  dataSet.Prop = buildData("Prop");
     
   return dataSet;
 }

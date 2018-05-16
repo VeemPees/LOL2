@@ -185,11 +185,16 @@ var cell1Items = rowItems.insertCell(0);
 var cell2Items = rowItems.insertCell(1);
 var cell3Items = rowItems.insertCell(2);
 var cell4Items = rowItems.insertCell(3);
+var cell5Items = rowItems.insertCell(4);
+var cell6Items = rowItems.insertCell(5);
 
 cell1Items.innerHTML = "<b>ID</b>";
-cell2Items.innerHTML = "<b>Title</b>";
-cell3Items.innerHTML = "<b>QttID</b>";
-cell4Items.innerHTML = "<b>MesID</b>";
+cell2Items.innerHTML = "<b>Complete</b>";
+cell3Items.innerHTML = "<b>Title</b>";
+cell4Items.innerHTML = "<b>QttID</b>";
+cell5Items.innerHTML = "<b>MesID</b>";
+cell6Items.innerHTML = "<b>PropCount</b>";
+
 
 // ADD JSON DATA TO THE TABLE AS ROWS.
 for (var i = 0; i < json.Items.length; i++) {
@@ -198,11 +203,15 @@ for (var i = 0; i < json.Items.length; i++) {
     var tabCell = trItems.insertCell(-1);
     tabCell.innerHTML = json.Items[i].ID;
     tabCell = trItems.insertCell(-1);
+    tabCell.innerHTML = json.Items[i].Complete;
+    tabCell = trItems.insertCell(-1);
     tabCell.innerHTML = json.Items[i].Title;
     tabCell = trItems.insertCell(-1);
     tabCell.innerHTML = json.Items[i].QttID;
     tabCell = trItems.insertCell(-1);
     tabCell.innerHTML = json.Items[i].MesID;
+    tabCell = trItems.insertCell(-1);
+    tabCell.innerHTML = json.Items[i].PropCount;
 }
 
 // CREATE DYNAMIC TABLE.
@@ -247,6 +256,27 @@ for (var i = 0; i < json.Mes.length; i++) {
     tabCell.innerHTML = json.Mes[i].Value;
 }
 
+// CREATE DYNAMIC TABLE.
+var tableProp = document.createElement("table");
+
+var headerProp = tableProp.createTHead();
+var rowProp = headerProp.insertRow(0);
+var cell1Prop = rowProp.insertCell(0);
+var cell2Prop = rowProp.insertCell(1);
+
+cell1Prop.innerHTML = "<b>ID</b>";
+cell2Prop.innerHTML = "<b>Value</b>";
+
+// ADD JSON DATA TO THE TABLE AS ROWS.
+for (var i = 0; i < json.Prop.length; i++) {
+
+    var trItems = tableProp.insertRow(-1);
+    var tabCell = trItems.insertCell(-1);
+    tabCell.innerHTML = json.Prop[i].ID;
+    tabCell = trItems.insertCell(-1);
+    tabCell.innerHTML = json.Prop[i].Value;
+}
+
 
 // FINALLY ADD THE NEWLY CREATED TABLE WITH JSON DATA TO A CONTAINER.
 var divContainer = document.getElementById("showData");
@@ -254,6 +284,7 @@ divContainer.innerHTML = "";
 divContainer.appendChild(tableItems);
 divContainer.appendChild(tableQtt);
 divContainer.appendChild(tableMes);
+divContainer.appendChild(tableProp);
 document.getElementById("loader").style.visibility = "hidden";
 $("#re").css("visibility", "visible");
 
@@ -264,20 +295,20 @@ function read_dataSet() {
 	$("#re").css("visibility", "hidden");
 
 	document.getElementById("loader").style.visibility = "visible";
-	var url = script_url + "?action=dataset";
+	//var url = script_url + "?action=dataset";
 
-	$.getJSON(url, function (json) {
-      fill_dataSet_tables(json);
-	});
+	//$.getJSON(url, function (json) {
+    //  fill_dataSet_tables(json);
+	//});
     
     
-    //google.script.run
-    //  .withSuccessHandler(function(json) {
-    //    fill_dataSet_tables(json);
-    //    
-    //  })
-    //  .withFailureHandler(onFailure)
-    //  .buildDataSet();
+    google.script.run
+      .withSuccessHandler(function(json) {
+        fill_dataSet_tables(json);
+        
+      })
+      .withFailureHandler(onFailure)
+      .buildDataSet();
 }
 
         
