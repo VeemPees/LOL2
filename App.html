@@ -187,6 +187,7 @@ var cell3Items = rowItems.insertCell(2);
 var cell4Items = rowItems.insertCell(3);
 var cell5Items = rowItems.insertCell(4);
 var cell6Items = rowItems.insertCell(5);
+var cell7Items = rowItems.insertCell(6);
 
 cell1Items.innerHTML = "<b>ID</b>";
 cell2Items.innerHTML = "<b>Complete</b>";
@@ -194,6 +195,7 @@ cell3Items.innerHTML = "<b>Title</b>";
 cell4Items.innerHTML = "<b>QttID</b>";
 cell5Items.innerHTML = "<b>MesID</b>";
 cell6Items.innerHTML = "<b>PropCount</b>";
+cell7Items.innerHTML = "<b>Props</b>";
 
 
 // ADD JSON DATA TO THE TABLE AS ROWS.
@@ -212,6 +214,14 @@ for (var i = 0; i < json.Items.length; i++) {
     tabCell.innerHTML = json.Items[i].MesID;
     tabCell = trItems.insertCell(-1);
     tabCell.innerHTML = json.Items[i].PropCount;
+    
+    var propsText = "";
+    for (var pIdx = 0; pIdx < json.Items[i].PropCount; pIdx++) {
+      propsText += json.Items[i].Props[pIdx];
+      propsText += " ";
+    }
+    tabCell = trItems.insertCell(-1);
+    tabCell.innerHTML = propsText;
 }
 
 // CREATE DYNAMIC TABLE.
