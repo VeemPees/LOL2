@@ -172,6 +172,113 @@ function read_value() {
     //  .readValues();
       
 }
+
+function fill_dataSet_tables(json) {
+// Set the variables from the results array
+
+// CREATE DYNAMIC TABLE.
+var tableItems = document.createElement("table");
+
+var headerItems = tableItems.createTHead();
+var rowItems = headerItems.insertRow(0);
+var cell1Items = rowItems.insertCell(0);
+var cell2Items = rowItems.insertCell(1);
+var cell3Items = rowItems.insertCell(2);
+var cell4Items = rowItems.insertCell(3);
+
+cell1Items.innerHTML = "<b>ID</b>";
+cell2Items.innerHTML = "<b>Title</b>";
+cell3Items.innerHTML = "<b>QttID</b>";
+cell4Items.innerHTML = "<b>MesID</b>";
+
+// ADD JSON DATA TO THE TABLE AS ROWS.
+for (var i = 0; i < json.Items.length; i++) {
+
+    var trItems = tableItems.insertRow(-1);
+    var tabCell = trItems.insertCell(-1);
+    tabCell.innerHTML = json.Items[i].ID;
+    tabCell = trItems.insertCell(-1);
+    tabCell.innerHTML = json.Items[i].Title;
+    tabCell = trItems.insertCell(-1);
+    tabCell.innerHTML = json.Items[i].QttID;
+    tabCell = trItems.insertCell(-1);
+    tabCell.innerHTML = json.Items[i].MesID;
+}
+
+// CREATE DYNAMIC TABLE.
+var tableQtt = document.createElement("table");
+
+var headerQtt = tableQtt.createTHead();
+var rowQtt = headerQtt.insertRow(0);
+var cell1Qtt = rowQtt.insertCell(0);
+var cell2Qtt = rowQtt.insertCell(1);
+
+cell1Qtt.innerHTML = "<b>ID</b>";
+cell2Qtt.innerHTML = "<b>Value</b>";
+
+// ADD JSON DATA TO THE TABLE AS ROWS.
+for (var i = 0; i < json.Qtt.length; i++) {
+
+    var trItems = tableQtt.insertRow(-1);
+    var tabCell = trItems.insertCell(-1);
+    tabCell.innerHTML = json.Qtt[i].ID;
+    tabCell = trItems.insertCell(-1);
+    tabCell.innerHTML = json.Qtt[i].Value;
+}
+
+// CREATE DYNAMIC TABLE.
+var tableMes = document.createElement("table");
+
+var headerMes = tableMes.createTHead();
+var rowMes = headerMes.insertRow(0);
+var cell1Mes = rowMes.insertCell(0);
+var cell2Mes = rowMes.insertCell(1);
+
+cell1Mes.innerHTML = "<b>ID</b>";
+cell2Mes.innerHTML = "<b>Value</b>";
+
+// ADD JSON DATA TO THE TABLE AS ROWS.
+for (var i = 0; i < json.Mes.length; i++) {
+
+    var trItems = tableMes.insertRow(-1);
+    var tabCell = trItems.insertCell(-1);
+    tabCell.innerHTML = json.Mes[i].ID;
+    tabCell = trItems.insertCell(-1);
+    tabCell.innerHTML = json.Mes[i].Value;
+}
+
+
+// FINALLY ADD THE NEWLY CREATED TABLE WITH JSON DATA TO A CONTAINER.
+var divContainer = document.getElementById("showData");
+divContainer.innerHTML = "";
+divContainer.appendChild(tableItems);
+divContainer.appendChild(tableQtt);
+divContainer.appendChild(tableMes);
+document.getElementById("loader").style.visibility = "hidden";
+$("#re").css("visibility", "visible");
+
+}
+
+function read_dataSet() {
+
+	$("#re").css("visibility", "hidden");
+
+	document.getElementById("loader").style.visibility = "visible";
+	//var url = script_url + "?action=read";
+
+	//$.getJSON(url, function (json) {
+    //  fill_result_table(json);
+	//});
+    
+    google.script.run
+      .withSuccessHandler(function(json) {
+        fill_dataSet_tables(json);
+        
+      })
+      .withFailureHandler(onFailure)
+      .buildDataSet();
+}
+
         
     </script>
   </head>
@@ -190,6 +297,7 @@ function read_value() {
       <input type="button" onclick="read_value()" value="Read" />
       <input type="button" onclick="update_value()" value="Update" />
       <input type="button" onclick="delete_value()" value="Delete" />
+      <input type="button" onclick="read_dataSet()" value="Read DS" />
       <div id="showData"></div>
       <p>
         <?= scriptUrl ?>
