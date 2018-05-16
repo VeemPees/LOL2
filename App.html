@@ -264,19 +264,20 @@ function read_dataSet() {
 	$("#re").css("visibility", "hidden");
 
 	document.getElementById("loader").style.visibility = "visible";
-	//var url = script_url + "?action=read";
+	var url = script_url + "?action=dataset";
 
-	//$.getJSON(url, function (json) {
-    //  fill_result_table(json);
-	//});
+	$.getJSON(url, function (json) {
+      fill_dataSet_tables(json);
+	});
     
-    google.script.run
-      .withSuccessHandler(function(json) {
-        fill_dataSet_tables(json);
-        
-      })
-      .withFailureHandler(onFailure)
-      .buildDataSet();
+    
+    //google.script.run
+    //  .withSuccessHandler(function(json) {
+    //    fill_dataSet_tables(json);
+    //    
+    //  })
+    //  .withFailureHandler(onFailure)
+    //  .buildDataSet();
 }
 
         

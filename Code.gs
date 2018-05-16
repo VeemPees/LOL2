@@ -52,6 +52,20 @@ function doGet(e) {
         return test(sheet);
       }
       
+      if (op == 'dataset') {
+        
+        var ds = buildDataSet();
+        
+        _log("DataSet built");
+        
+        var output  = ContentService.createTextOutput();
+        
+        output.setContent(JSON.stringify(ds));
+        output.setMimeType(ContentService.MimeType.JSON);
+        
+        return output;
+      }
+      
     } else {
       
       // There is no op/action, so render the entire HTML page
