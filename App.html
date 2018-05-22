@@ -1,375 +1,354 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <style>
-      table, th, td 
-      {
-      margin:10px 0;
-      border:solid 1px #333;
-      padding:2px 4px;
-      font:15px Verdana;
-      }
-      th {
-      font-weight:bold;
-      }
-      #loader {
-      border: 16px solid #f3f3f3;
-      border-radius: 50%;
-      border-top: 16px solid blue;
-      border-bottom: 16px solid blue;
-      width: 60px;
-      height: 60px;
-      -webkit-animation: spin 2s linear infinite;
-      animation: spin 2s linear infinite;
-      visibility:hidden;
-      }
-      @-webkit-keyframes spin {
-      0% { -webkit-transform: rotate(0deg); }
-      100% { -webkit-transform: rotate(360deg); }
-      }
-      @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-      }
-    </style>
+	<head>
+		<style>
+			table, th, td 
+			{
+				margin:10px 0;
+				border:solid 1px #333;
+				padding:2px 4px;
+				font:15px Verdana;
+			}
+			th {
+				font-weight:bold;
+			}
+			#loader {
+				border: 16px solid #f3f3f3;
+				border-radius: 50%;
+				border-top: 16px solid blue;
+				border-bottom: 16px solid blue;
+				width: 60px;
+				height: 60px;
+				-webkit-animation: spin 2s linear infinite;
+				animation: spin 2s linear infinite;
+				visibility:hidden;
+			}
+			@-webkit-keyframes spin {
+				0% { -webkit-transform: rotate(0deg); }
+				100% { -webkit-transform: rotate(360deg); }
+			}
+			@keyframes spin {
+				0% { transform: rotate(0deg); }
+				100% { transform: rotate(360deg); }
+			}
+		</style>
     
-    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquerymobile/1.4.5/jquery.mobile.min.js"></script>
-<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jquerymobile/1.4.5/jquery.mobile.min.css">
+		<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquerymobile/1.4.5/jquery.mobile.min.js"></script>
+		<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jquerymobile/1.4.5/jquery.mobile.min.css">
     
-    <script>
-     var script_url = <?= scriptUrl ?>;
+		<script>
+			var script_url = <?= scriptUrl ?>;
 
-// Make an AJAX call to Google Script
-function insert_value() {
+			// Make an AJAX call to Google Script
+			function insert_value() {
 
-$("#re").css("visibility", "hidden");
-document.getElementById("loader").style.visibility = "visible";
-$('#mySpinner').addClass('spinner');
+				$("#re").css("visibility", "hidden");
+				document.getElementById("loader").style.visibility = "visible";
+				$('#mySpinner').addClass('spinner');
 
-var id1 = $("#id").val();
-var name = $("#name").val();
+				var id1 = $("#id").val();
+				var name = $("#name").val();
 
+				var url = script_url + "?callback=ctrlq&name=" + name + "&id=" + id1 + "&action=insert";
 
-	var url = script_url + "?callback=ctrlq&name=" + name + "&id=" + id1 + "&action=insert";
+				var request = jQuery.ajax({
+					crossDomain: true,
+					url: url,
+					method: "GET",
+					dataType: "jsonp"
+				});
+			}
 
+			function update_value() {
+				$("#re").css("visibility", "hidden");
+				document.getElementById("loader").style.visibility = "visible";
 
-	var request = jQuery.ajax({
-		crossDomain: true,
-		url: url,
-		method: "GET",
-		dataType: "jsonp"
-	});
+				var id1 = $("#id").val();
+				var name = $("#name").val();
 
-}
+				var url = script_url + "?callback=ctrlq&name=" + name + "&id=" + id1 + "&action=update";
 
-function update_value() {
-	$("#re").css("visibility", "hidden");
-	document.getElementById("loader").style.visibility = "visible";
+				var request = jQuery.ajax({
+					crossDomain: true,
+					url: url,
+					method: "GET",
+					dataType: "jsonp"
+				});
+			}
 
 
-	var id1 = $("#id").val();
-	var name = $("#name").val();
+			function delete_value() {
+				$("#re").css("visibility", "hidden");
+				document.getElementById("loader").style.visibility = "visible";
+				$('#mySpinner').addClass('spinner');
+				var id1 = $("#id").val();
+				var name = $("#name").val();
 
 
-	var url = script_url + "?callback=ctrlq&name=" + name + "&id=" + id1 + "&action=update";
+				var url = script_url + "?callback=ctrlq&name=" + name + "&id=" + id1 + "&action=delete";
 
 
-	var request = jQuery.ajax({
-		crossDomain: true,
-		url: url,
-		method: "GET",
-		dataType: "jsonp"
-	});
+				var request = jQuery.ajax({
+					crossDomain: true,
+					url: url,
+					method: "GET",
+					dataType: "jsonp"
+				});
 
+			}
 
-}
 
+			// print the returned data
+			function ctrlq(e) {
 
-function delete_value() {
-	$("#re").css("visibility", "hidden");
-	document.getElementById("loader").style.visibility = "visible";
-	$('#mySpinner').addClass('spinner');
-	var id1 = $("#id").val();
-	var name = $("#name").val();
-
-
-	var url = script_url + "?callback=ctrlq&name=" + name + "&id=" + id1 + "&action=delete";
-
-
-	var request = jQuery.ajax({
-		crossDomain: true,
-		url: url,
-		method: "GET",
-		dataType: "jsonp"
-	});
-
-}
-
-
-// print the returned data
-function ctrlq(e) {
-
-
-	$("#re").html(e.result);
-	$("#re").css("visibility", "visible");
-	read_value();
-}
-
-function fill_result_table(json) {
-// Set the variables from the results array
-
-		// CREATE DYNAMIC TABLE.
-		var table = document.createElement("table");
-
-
-		var header = table.createTHead();
-		var row = header.insertRow(0);
-		var cell1 = row.insertCell(0);
-		var cell2 = row.insertCell(1);
-
-		cell1.innerHTML = "<b>ID</b>";
-		cell2.innerHTML = "<b>Name</b>";
-
-		// ADD JSON DATA TO THE TABLE AS ROWS.
-		for (var i = 0; i < json.records.length; i++) {
-
-			tr = table.insertRow(-1);
-			var tabCell = tr.insertCell(-1);
-			tabCell.innerHTML = json.records[i].ID;
-			tabCell = tr.insertCell(-1);
-			tabCell.innerHTML = json.records[i].NAME;
-		}
-
-
-		// FINALLY ADD THE NEWLY CREATED TABLE WITH JSON DATA TO A CONTAINER.
-		var divContainer = document.getElementById("showData");
-		divContainer.innerHTML = "";
-		divContainer.appendChild(table);
-		document.getElementById("loader").style.visibility = "hidden";
-		$("#re").css("visibility", "visible");
-}
-
-function onFailure(error) {
-document.getElementById("loader").style.visibility = "hidden";
-$("#re").css("visibility", "visible");
-alert(error.message);
-}
-
-function read_value() {
-
-	$("#re").css("visibility", "hidden");
-
-	document.getElementById("loader").style.visibility = "visible";
-	var url = script_url + "?action=read";
-
-	$.getJSON(url, function (json) {
-      fill_result_table(json);
-	});
-    
-    
-    //google.script.run
-    //  .withSuccessHandler(function(json) {
-    //    fill_result_table(json);
-    //  })
-    //  .withFailureHandler(onFailure)
-    //  .readValues();
-      
-}
-
-function fill_dataSet_tables(json) {
-// Set the variables from the results array
-
-// CREATE DYNAMIC TABLE.
-var tableItems = document.createElement("table");
-
-var headerItems = tableItems.createTHead();
-var rowItems = headerItems.insertRow(0);
-var cell1Items = rowItems.insertCell(0);
-var cell2Items = rowItems.insertCell(1);
-var cell3Items = rowItems.insertCell(2);
-var cell4Items = rowItems.insertCell(3);
-var cell5Items = rowItems.insertCell(4);
-var cell6Items = rowItems.insertCell(5);
-var cell7Items = rowItems.insertCell(6);
-
-cell1Items.innerHTML = "<b>ID</b>";
-cell2Items.innerHTML = "<b>Complete</b>";
-cell3Items.innerHTML = "<b>Title</b>";
-cell4Items.innerHTML = "<b>QttID</b>";
-cell5Items.innerHTML = "<b>MesID</b>";
-cell6Items.innerHTML = "<b>PropCount</b>";
-cell7Items.innerHTML = "<b>Props</b>";
-
-
-// ADD JSON DATA TO THE TABLE AS ROWS.
-for (var i = 0; i < json.Items.length; i++) {
-
-    var trItems = tableItems.insertRow(-1);
-    var tabCell = trItems.insertCell(-1);
-    tabCell.innerHTML = json.Items[i].ID;
-    tabCell = trItems.insertCell(-1);
-    tabCell.innerHTML = json.Items[i].Complete;
-    tabCell = trItems.insertCell(-1);
-    tabCell.innerHTML = json.Items[i].Title;
-    tabCell = trItems.insertCell(-1);
-    tabCell.innerHTML = json.Items[i].QttID;
-    tabCell = trItems.insertCell(-1);
-    tabCell.innerHTML = json.Items[i].MesID;
-    tabCell = trItems.insertCell(-1);
-    tabCell.innerHTML = json.Items[i].PropCount;
-    
-    var propsText = "";
-    for (var pIdx = 0; pIdx < json.Items[i].PropCount; pIdx++) {
-      propsText += json.Items[i].Props[pIdx];
-      propsText += " ";
-    }
-    tabCell = trItems.insertCell(-1);
-    tabCell.innerHTML = propsText;
-}
-
-// CREATE DYNAMIC TABLE.
-var tableQtt = document.createElement("table");
-
-var headerQtt = tableQtt.createTHead();
-var rowQtt = headerQtt.insertRow(0);
-var cell1Qtt = rowQtt.insertCell(0);
-var cell2Qtt = rowQtt.insertCell(1);
-
-cell1Qtt.innerHTML = "<b>ID</b>";
-cell2Qtt.innerHTML = "<b>Value</b>";
-
-// ADD JSON DATA TO THE TABLE AS ROWS.
-for (var i = 0; i < json.Qtt.length; i++) {
-
-    var trItems = tableQtt.insertRow(-1);
-    var tabCell = trItems.insertCell(-1);
-    tabCell.innerHTML = json.Qtt[i].ID;
-    tabCell = trItems.insertCell(-1);
-    tabCell.innerHTML = json.Qtt[i].Value;
-}
-
-// CREATE DYNAMIC TABLE.
-var tableMes = document.createElement("table");
-
-var headerMes = tableMes.createTHead();
-var rowMes = headerMes.insertRow(0);
-var cell1Mes = rowMes.insertCell(0);
-var cell2Mes = rowMes.insertCell(1);
-
-cell1Mes.innerHTML = "<b>ID</b>";
-cell2Mes.innerHTML = "<b>Value</b>";
-
-// ADD JSON DATA TO THE TABLE AS ROWS.
-for (var i = 0; i < json.Mes.length; i++) {
-
-    var trItems = tableMes.insertRow(-1);
-    var tabCell = trItems.insertCell(-1);
-    tabCell.innerHTML = json.Mes[i].ID;
-    tabCell = trItems.insertCell(-1);
-    tabCell.innerHTML = json.Mes[i].Value;
-}
-
-// CREATE DYNAMIC TABLE.
-var tableProp = document.createElement("table");
-
-var headerProp = tableProp.createTHead();
-var rowProp = headerProp.insertRow(0);
-var cell1Prop = rowProp.insertCell(0);
-var cell2Prop = rowProp.insertCell(1);
-
-cell1Prop.innerHTML = "<b>ID</b>";
-cell2Prop.innerHTML = "<b>Value</b>";
-
-// ADD JSON DATA TO THE TABLE AS ROWS.
-for (var i = 0; i < json.Prop.length; i++) {
-
-    var trItems = tableProp.insertRow(-1);
-    var tabCell = trItems.insertCell(-1);
-    tabCell.innerHTML = json.Prop[i].ID;
-    tabCell = trItems.insertCell(-1);
-    tabCell.innerHTML = json.Prop[i].Value;
-}
-
-
-// FINALLY ADD THE NEWLY CREATED TABLE WITH JSON DATA TO A CONTAINER.
-var divContainer = document.getElementById("showData");
-divContainer.innerHTML = "";
-divContainer.appendChild(tableItems);
-divContainer.appendChild(tableQtt);
-divContainer.appendChild(tableMes);
-divContainer.appendChild(tableProp);
-document.getElementById("loader").style.visibility = "hidden";
-$("#re").css("visibility", "visible");
-
-}
-
-function read_dataSet() {
-
-	$("#re").css("visibility", "hidden");
-
-	document.getElementById("loader").style.visibility = "visible";
-	//var url = script_url + "?action=dataset";
-
-	//$.getJSON(url, function (json) {
-    //  fill_dataSet_tables(json);
-	//});
-    
-    
-    google.script.run
-      .withSuccessHandler(function(json) {
-        fill_dataSet_tables(json);
-        
-      })
-      .withFailureHandler(onFailure)
-      .buildDataSet();
-}
-
-        
-    </script>
-  </head>
-  <body>
-    <div align="center" data-role="page">
-      <div role="main" class="ui-content">
-      <!--
-      <form >
-        ID
-        <input type = "text" name ="id" id="id">
-        Name
-        <input type = "text" name ="name" id="name">
-      </form>
-      -->
-      <form >
-        ID
-        <input type = "text" name ="id" id="id">
-        Value
-        <input type = "text" name ="name" id="name">
-      </form>
-      
-      <form>
-    <input id="filter-for-listview" data-type="search" placeholder="Type to search...">
-</form>
-<ul data-role="listview" data-inset="true" data-filter="true" data-input="#filter-for-listview">
-    <li><a href="#">Acura</a></li>
-    <li><a href="#">Audi</a></li>
-    <li><a href="#">BMW</a></li>
-    <li><a href="#">Cadillac</a></li>
-    <li><a href="#">Ferrari</a></li>
-</ul>
-      
-      <div id="loader"></div>
-      <p id="re"></p>
-      <input type="button" onClick="insert_value()" value="Insert" />
-      <input type="button" onclick="read_value()" value="Read" />
-      <input type="button" onclick="update_value()" value="Update" />
-      <input type="button" onclick="delete_value()" value="Delete" />
-      <input type="button" onclick="read_dataSet()" value="Read DS" />
-      <div id="showData"></div>
-      <p>
-        <?= scriptUrl ?>
-      </p>
-    </div>
-    </div>
-  </body>
+
+				$("#re").html(e.result);
+				$("#re").css("visibility", "visible");
+				read_value();
+			}
+
+			function fill_result_table(json) {
+			// Set the variables from the results array
+
+					// CREATE DYNAMIC TABLE.
+					var table = document.createElement("table");
+
+
+					var header = table.createTHead();
+					var row = header.insertRow(0);
+					var cell1 = row.insertCell(0);
+					var cell2 = row.insertCell(1);
+
+					cell1.innerHTML = "<b>ID</b>";
+					cell2.innerHTML = "<b>Name</b>";
+
+					// ADD JSON DATA TO THE TABLE AS ROWS.
+					for (var i = 0; i < json.records.length; i++) {
+
+						tr = table.insertRow(-1);
+						var tabCell = tr.insertCell(-1);
+						tabCell.innerHTML = json.records[i].ID;
+						tabCell = tr.insertCell(-1);
+						tabCell.innerHTML = json.records[i].NAME;
+					}
+
+
+					// FINALLY ADD THE NEWLY CREATED TABLE WITH JSON DATA TO A CONTAINER.
+					var divContainer = document.getElementById("showData");
+					divContainer.innerHTML = "";
+					divContainer.appendChild(table);
+					document.getElementById("loader").style.visibility = "hidden";
+					$("#re").css("visibility", "visible");
+			}
+
+			function onFailure(error) {
+			document.getElementById("loader").style.visibility = "hidden";
+			$("#re").css("visibility", "visible");
+			alert(error.message);
+			}
+
+			function read_value() {
+
+				$("#re").css("visibility", "hidden");
+
+				document.getElementById("loader").style.visibility = "visible";
+				var url = script_url + "?action=read";
+
+				$.getJSON(url, function (json) {
+				  fill_result_table(json);
+				});
+				
+				
+				//google.script.run
+				//  .withSuccessHandler(function(json) {
+				//    fill_result_table(json);
+				//  })
+				//  .withFailureHandler(onFailure)
+				//  .readValues();
+				  
+			}
+
+			function fill_dataSet_tables(json) {
+			// Set the variables from the results array
+
+			// CREATE DYNAMIC TABLE.
+			var tableItems = document.createElement("table");
+
+			var headerItems = tableItems.createTHead();
+			var rowItems = headerItems.insertRow(0);
+			var cell1Items = rowItems.insertCell(0);
+			var cell2Items = rowItems.insertCell(1);
+			var cell3Items = rowItems.insertCell(2);
+			var cell4Items = rowItems.insertCell(3);
+			var cell5Items = rowItems.insertCell(4);
+			var cell6Items = rowItems.insertCell(5);
+			var cell7Items = rowItems.insertCell(6);
+
+			cell1Items.innerHTML = "<b>ID</b>";
+			cell2Items.innerHTML = "<b>Complete</b>";
+			cell3Items.innerHTML = "<b>Title</b>";
+			cell4Items.innerHTML = "<b>QttID</b>";
+			cell5Items.innerHTML = "<b>MesID</b>";
+			cell6Items.innerHTML = "<b>PropCount</b>";
+			cell7Items.innerHTML = "<b>Props</b>";
+
+
+			// ADD JSON DATA TO THE TABLE AS ROWS.
+			for (var i = 0; i < json.Items.length; i++) {
+
+				var trItems = tableItems.insertRow(-1);
+				var tabCell = trItems.insertCell(-1);
+				tabCell.innerHTML = json.Items[i].ID;
+				tabCell = trItems.insertCell(-1);
+				tabCell.innerHTML = json.Items[i].Complete;
+				tabCell = trItems.insertCell(-1);
+				tabCell.innerHTML = json.Items[i].Title;
+				tabCell = trItems.insertCell(-1);
+				tabCell.innerHTML = json.Items[i].QttID;
+				tabCell = trItems.insertCell(-1);
+				tabCell.innerHTML = json.Items[i].MesID;
+				tabCell = trItems.insertCell(-1);
+				tabCell.innerHTML = json.Items[i].PropCount;
+				
+				var propsText = "";
+				for (var pIdx = 0; pIdx < json.Items[i].PropCount; pIdx++) {
+				  propsText += json.Items[i].Props[pIdx];
+				  propsText += " ";
+				}
+				tabCell = trItems.insertCell(-1);
+				tabCell.innerHTML = propsText;
+			}
+
+			// CREATE DYNAMIC TABLE.
+			var tableQtt = document.createElement("table");
+
+			var headerQtt = tableQtt.createTHead();
+			var rowQtt = headerQtt.insertRow(0);
+			var cell1Qtt = rowQtt.insertCell(0);
+			var cell2Qtt = rowQtt.insertCell(1);
+
+			cell1Qtt.innerHTML = "<b>ID</b>";
+			cell2Qtt.innerHTML = "<b>Value</b>";
+
+			// ADD JSON DATA TO THE TABLE AS ROWS.
+			for (var i = 0; i < json.Qtt.length; i++) {
+
+				var trItems = tableQtt.insertRow(-1);
+				var tabCell = trItems.insertCell(-1);
+				tabCell.innerHTML = json.Qtt[i].ID;
+				tabCell = trItems.insertCell(-1);
+				tabCell.innerHTML = json.Qtt[i].Value;
+			}
+
+			// CREATE DYNAMIC TABLE.
+			var tableMes = document.createElement("table");
+
+			var headerMes = tableMes.createTHead();
+			var rowMes = headerMes.insertRow(0);
+			var cell1Mes = rowMes.insertCell(0);
+			var cell2Mes = rowMes.insertCell(1);
+
+			cell1Mes.innerHTML = "<b>ID</b>";
+			cell2Mes.innerHTML = "<b>Value</b>";
+
+			// ADD JSON DATA TO THE TABLE AS ROWS.
+			for (var i = 0; i < json.Mes.length; i++) {
+
+				var trItems = tableMes.insertRow(-1);
+				var tabCell = trItems.insertCell(-1);
+				tabCell.innerHTML = json.Mes[i].ID;
+				tabCell = trItems.insertCell(-1);
+				tabCell.innerHTML = json.Mes[i].Value;
+			}
+
+			// CREATE DYNAMIC TABLE.
+			var tableProp = document.createElement("table");
+
+			var headerProp = tableProp.createTHead();
+			var rowProp = headerProp.insertRow(0);
+			var cell1Prop = rowProp.insertCell(0);
+			var cell2Prop = rowProp.insertCell(1);
+
+			cell1Prop.innerHTML = "<b>ID</b>";
+			cell2Prop.innerHTML = "<b>Value</b>";
+
+			// ADD JSON DATA TO THE TABLE AS ROWS.
+			for (var i = 0; i < json.Prop.length; i++) {
+
+				var trItems = tableProp.insertRow(-1);
+				var tabCell = trItems.insertCell(-1);
+				tabCell.innerHTML = json.Prop[i].ID;
+				tabCell = trItems.insertCell(-1);
+				tabCell.innerHTML = json.Prop[i].Value;
+			}
+
+
+			// FINALLY ADD THE NEWLY CREATED TABLE WITH JSON DATA TO A CONTAINER.
+			var divContainer = document.getElementById("showData");
+			divContainer.innerHTML = "";
+			divContainer.appendChild(tableItems);
+			divContainer.appendChild(tableQtt);
+			divContainer.appendChild(tableMes);
+			divContainer.appendChild(tableProp);
+			document.getElementById("loader").style.visibility = "hidden";
+			$("#re").css("visibility", "visible");
+
+			}
+
+			function read_dataSet() {
+
+				$("#re").css("visibility", "hidden");
+
+				document.getElementById("loader").style.visibility = "visible";
+				//var url = script_url + "?action=dataset";
+
+				//$.getJSON(url, function (json) {
+				//  fill_dataSet_tables(json);
+				//});
+				
+				
+				google.script.run
+				  .withSuccessHandler(function(json) {
+					fill_dataSet_tables(json);
+					
+				  })
+				  .withFailureHandler(onFailure)
+				  .buildDataSet();
+			}
+		</script>
+	</head>
+	<body>
+		<div align="center" data-role="page">
+			<div role="main" class="ui-content">
+				<!--
+				<form >
+					ID
+					<input type = "text" name ="id" id="id">
+					Name
+					<input type = "text" name ="name" id="name">
+				</form>
+				-->
+				<form >
+					ID
+						<input type = "text" name ="id" id="id">
+					Value
+						<input type = "text" name ="name" id="name">
+				</form>
+		  
+				<div id="loader"></div>
+				<p id="re"></p>
+				<input type="button" onClick="insert_value()" value="Insert" />
+				<input type="button" onclick="read_value()" value="Read" />
+				<input type="button" onclick="update_value()" value="Update" />
+				<input type="button" onclick="delete_value()" value="Delete" />
+				<input type="button" onclick="read_dataSet()" value="Read DS" />
+				<div id="showData"></div>
+				<p>
+					<?= scriptUrl ?>
+				</p>
+			</div>
+		</div>
+	</body>
 </html>
